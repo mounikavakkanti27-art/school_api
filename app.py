@@ -12,10 +12,10 @@ def home():
 @app.route('/students', methods=['POST'])
 def add_student():
     try:
-        data = request.get_json()
+        data = request.get_json() #get request body as json 
 
-        conn = get_connection()
-        cur = conn.cursor()
+        conn = get_connection() #helps to form connection to the database
+        cur = conn.cursor() #helps to execute sql queries and fetch results from the database
 
         cur.execute("""
             INSERT INTO "studentDB".students 
@@ -28,13 +28,14 @@ def add_student():
             data['address'],
             data['city'],
             data['monitored_by']
-        ))
+        )) #execute the sql query to insert a new student record into the students table. The RETURNING clause is used to get the generated student_id of the newly inserted record.    
 
-        student_id = cur.fetchone()[0]
-        conn.commit()
+        student_id = cur.fetchone()[0] #fetchone() retrieves the next row of a query result set, returning a single sequence, or None when no more data is available. [0] is used to access the first element of the returned sequence, which is the student_id.
+        
+        conn.commit() #commit the transaction to save the changes to the database. This is necessary after executing an INSERT, UPDATE, or DELETE statement to ensure that the changes are persisted in the database.
 
-        cur.close()
-        conn.close()
+        cur.close() #close the cursor to free up resources. This is important to prevent memory leaks and ensure that database connections are properly managed.
+        conn.close()#close the database connection to free up resources. This is important to prevent memory leaks and ensure that database connections are properly managed.
 
         return jsonify({
             "student_id": student_id,
