@@ -10,7 +10,7 @@ def home():
 def courses():
     return "<h1>Courses endpoint.</h1>"
 
-@app.route('/admin') #http://127.0.0.1:5001/admin 
+@app.route('/admin') #http://127.0.0.1:5001/admin -- url for admin endpoint
 def admin():         #admin will redirect to  coursess url when accessed.
     return redirect(url_for('courses')) #redirects to the courses endpoint when the admin endpoint is accessed.
 
