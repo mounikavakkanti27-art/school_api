@@ -1,53 +1,22 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from db import get_connection, Student, db
-import uuid
+from flask import Flask, redirect, url_for
 
 app = Flask(__name__)
-CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///school.db'
-db.init_app(app)
 
-def create_or_update_student(data):
-    student = Student.query.filter_by(
-        first_name=data['first_name'],
-        last_name=data['last_name'],
-        city=data['city']
-    ).first()
-
-    if student:
-        # update
-        student.address = data['address']
-        student.monitored_by = data['monitored_by']
-    else:
-        # create
-        student = Student(
-            student_id=str(uuid.uuid4()),
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            address=data['address'],
-            city=data['city'],
-            monitored_by=data['monitored_by']
-        )
-        db.session.add(student)
-
-    db.session.commit()
-
-@app.route('/')
+@app.route('/') #http://127.0.0.1:5001/
 def home():
-    return jsonify({"message": "School API is running"})
+    return "<h1>First Flask application</h1>"
 
-@app.route('/students', methods=['POST'])
-def add_student():
-    try:
-        data = request.get_json()
-        create_or_update_student(data)
-        return jsonify({"message": "Student created successfully"}), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+@app.route("/courses") #http://127.0.0.1:5001/courses
+def courses():
+    return "<h1>Courses endpoint.</h1>"
+
+@app.route('/admin') #http://127.0.0.1:5001/admin 
+def admin():         #admin will redirect to  coursess url when accessed.
+    return redirect(url_for('courses')) #redirects to the courses endpoint when the admin endpoint is accessed.
+
+@app.route('/student/<name>/<course>') #http://127.0.0.1:5001/student/Mounika/Maths
+def get_student(name: str, course: str):
+    return f"I am {name} and I am studing {course} class."
 
 if __name__ == '__main__':
-    with app.app_context(): 
-        db.create_all()
-    app.run(debug=True)
-
+    app.run(debug=True, port=5001)
