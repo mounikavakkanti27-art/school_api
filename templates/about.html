@@ -1,0 +1,11 @@
+{%extends 'base.html' %}
+{%block title%}About Page{%endblock%}
+{%block content%}
+    <h1>{{context}}</h1>
+    {%for i in course_list%}
+        {% if i =='DSA'%}
+            <h3>{{i}} is high priority</h3>
+        {%endif%}
+        <h4>{{i}}</h4>
+    {%endfor%}
+{%endblock%}
