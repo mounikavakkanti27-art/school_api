@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>Index Page.</title>
+    </head>
+    <body>
+        <h1>Welcome to the School API</h1>
+        <p>I am preparing for {{content}}, Preparing interview for below technologies.</p>
+        <ul>
+            {% for i in loop %}
+                <li>{{i}}</li>
+            {%if i== 'ML'%}
+            <p>ML is my favorite subject.</p>
+            {% endif %}    
+            {% endfor %}
+        </ul>>
+    </body>
+</html>
