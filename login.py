@@ -1,41 +1,34 @@
-
-from curses import flash
-
-from flask import Flask, render_template, redirect, url_for, request, session
-
+from flask import Flask, redirect, url_for, render_template, request, session
 from datetime import timedelta
 
+
 app = Flask(__name__)
+#insted of calling every user , I can call the user globally in method by using session and use it all over
 app.secret_key = 'Mounika'
-app.permanent_session_lifetime = timedelta(minutes=1) 
+app.permanent_session_lifetime = timedelta(minutes=5)
 
 @app.route('/')
 def home():
-    return redirect(url_for('login'))
+    return "Welcome to home page!"
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        session['user'] = username 
-        if username == 'admin' and password == 'password':
-            return render_template('courses.html', username=username)
-        else:
-            if 'user' in session:
-                return redirect(url_for('user'))
-    return render_template('login.html')    
+       session.permanent = True
+       username = request.form.get('username')
+       session['user'] = username
+       return redirect(url_for('user'))
+    else:
+        if  "user" in session:
+            return redirect(url_for("user")) 
+    return render_template('login.html')
 
-@app.route('/user')       
+@app.route('/user')
 def user():
-    username = session['user']
-    return f"you loged in as {username}."
-
-@app.route('/logout')
-def logout():
-    session.pop('user', None)
-    flash('you have been loged out ')
+    if 'user' in session:
+        user = session['user']
+        return f"welcome to the page {user}!"
     return redirect(url_for('login'))
 
-if __name__ =='__main__':
-    app.run(debug=True, port=5001)
+if __name__ == '__main__':
+    app.run(debug=True)
